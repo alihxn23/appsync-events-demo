@@ -8,14 +8,10 @@ export function App() {
   const [messages, setMessages] = useState<Array<Message>>([]);
   const [newMessage, setNewMessage] = useState<string>("");
   const [email, setEmail] = useState<string>("");
-
   // get user
   useEffect(() => {
-    // get logged in user's email
-    const userEmail = "";
-
-    // set the email state to user's email
-    setEmail(userEmail);
+    // get logged in user's email and update state
+    // setEmail(userEmail);
   }, []);
 
   // setup ws listener
@@ -33,7 +29,7 @@ export function App() {
 
     // send the message here
 
-    // clear newMessge
+    // clear newMessage
     setNewMessage("");
   };
 
