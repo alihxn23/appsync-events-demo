@@ -8,6 +8,7 @@ export function App() {
   const [messages, setMessages] = useState<Array<Message>>([]);
   const [newMessage, setNewMessage] = useState<string>("");
   const [email, setEmail] = useState<string>("");
+
   // get user
   useEffect(() => {
     // get logged in user's email and update state
