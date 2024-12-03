@@ -28,7 +28,7 @@ export function App() {
     };
   }, []);
 
-  const handleSendButton = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     // send the message here
@@ -62,7 +62,7 @@ export function App() {
             ))}
           </div>
           <div className="input-container">
-            <form onSubmit={handleSendButton} className="input-form">
+            <form onSubmit={handleFormSubmit} className="input-form">
               <input
                 type="text"
                 placeholder="Type your message"
