@@ -4,7 +4,7 @@ import { Amplify, ResourcesConfig } from "aws-amplify";
 import config from "../amplifyconfiguration.json";
 import "./App.css";
 import { Message } from "./models/Message";
-import { fetchAuthSession } from "aws-amplify/auth";
+import { fetchAuthSession, signOut } from "aws-amplify/auth";
 import { events } from "aws-amplify/api";
 import { withAuthenticator } from "@aws-amplify/ui-react";
 
@@ -72,7 +72,7 @@ export function App() {
           <h1>QuickChat</h1>
           <div>
             <h3>{email}</h3>
-            <h3 className="sign-out" onClick={() => {}}>
+            <h3 className="sign-out" onClick={() => {signOut()}}>
               Sign Out
             </h3>
           </div>
@@ -109,4 +109,4 @@ export function App() {
   );
 }
 
-export default withAuthenticator(App, { hideSignUp: true });
+export default withAuthenticator(App);

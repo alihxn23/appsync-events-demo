@@ -14,6 +14,7 @@ export class Auth extends Construct {
       },
       removalPolicy: RemovalPolicy.DESTROY,
       signInAliases: { email: true },
+      selfSignUpEnabled: true,
     });
 
     const client = userPool.addClient("Client", {
