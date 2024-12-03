@@ -1,0 +1,14 @@
+{
+  "Auth": {
+    "Cognito": {
+      "userPoolId": "your-user-pool-id",
+      "userPoolClientId": "your-user-pool-client-id"
+    }
+  },
+  "API": {
+    "Events": {
+      "defaultAuthMode": "userPool",
+      "endpoint": "your-appsync-endpoint (of the form https://{endpoint}.appsync-api.{region}.amazonaws.com/event)"
+    }
+  }
+}

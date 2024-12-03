@@ -1,35 +1,84 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { useEffect, useState } from "react";
+import config from "../amplifyconfiguration.json";
+import "./App.css";
+import { Message } from "./models/Message";
 
-function App() {
-  const [count, setCount] = useState(0)
+export function App() {
+  const [messages, setMessages] = useState<Array<Message>>([]);
+  const [newMessage, setNewMessage] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+
+  // get user
+  useEffect(() => {
+    // get logged in user's email
+    const userEmail = "";
+
+    // set the email state to user's email
+    setEmail(userEmail);
+  }, []);
+
+  // setup ws listener
+  useEffect(() => {
+    // connect to the websocket endpoint
+
+    //cleanup function
+    return () => {
+      // close the websocket connection if the component is unmounted
+    };
+  }, []);
+
+  const handleSendButton = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    // send the message here
+
+    // clear newMessge
+    setNewMessage("");
+  };
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <div className="container">
+        <header>
+          <h1>QuickChat</h1>
+          <div>
+            <h3>{email}</h3>
+            <h3 className="sign-out" onClick={() => {}}>
+              Sign Out
+            </h3>
+          </div>
+        </header>
+        <main className="chat-container">
+          <div className="messages-container">
+            {messages.map((msg, i) => (
+              <div key={`message-${i}`} className="message">
+                <strong className="message-username">
+                  {msg.user === email ? "Me" : msg.user}
+                </strong>
+                <br></br>
+                {msg.content}
+              </div>
+            ))}
+          </div>
+          <div className="input-container">
+            <form onSubmit={handleSendButton} className="input-form">
+              <input
+                type="text"
+                placeholder="Type your message"
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                className="message-input"
+              />
+              <button type="submit" className="send-button">
+                Send
+              </button>
+            </form>
+          </div>
+        </main>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
