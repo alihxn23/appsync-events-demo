@@ -1,8 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from "react";
+import { Amplify, ResourcesConfig } from "aws-amplify";
 import config from "../amplifyconfiguration.json";
 import "./App.css";
 import { Message } from "./models/Message";
+import { fetchAuthSession } from "aws-amplify/auth";
+import { events } from "aws-amplify/api";
+import { withAuthenticator } from "@aws-amplify/ui-react";
+
+Amplify.configure(config as ResourcesConfig);
 
 export function App() {
   const [messages, setMessages] = useState<Array<Message>>([]);
@@ -12,16 +18,40 @@ export function App() {
   // get user
   useEffect(() => {
     // get logged in user's email and update state
-    // setEmail(userEmail);
+    const fetchAndSetEmail = async () => {
+      const userEmail =
+        (await fetchAuthSession()).tokens?.idToken?.payload.email?.toString() ??
+        "unknown";
+      setEmail(userEmail);
+    };
+
+    fetchAndSetEmail();
   }, []);
 
   // setup ws listener
   useEffect(() => {
     // connect to the websocket endpoint
 
+    const connectToEndpoint = async () => {
+      const channel = await events.connect("/default/test");
+      channel.subscribe({
+        next: (data) => {
+          setMessages((old) => [
+            ...old,
+            { content: data.event.content, user: data.event.user },
+          ]);
+        },
+        error: (err) => console.error("error", err),
+      });
+      return channel;
+    };
+
+    const channel = connectToEndpoint();
+
     //cleanup function
     return () => {
       // close the websocket connection if the component is unmounted
+      channel.then((e) => e.close());
     };
   }, []);
 
@@ -29,6 +59,7 @@ export function App() {
     e.preventDefault();
 
     // send the message here
+    await events.post("/default/test", { content: newMessage, user: email });
 
     // clear newMessage
     setNewMessage("");
@@ -78,4 +109,4 @@ export function App() {
   );
 }
 
-export default App;
+export default withAuthenticator(App, { hideSignUp: true });
