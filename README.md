@@ -14,7 +14,7 @@ npm run dev
 
 *Note - Make sure you have AWS CLI and CDK CLI installed and working. More details [here](https://docs.aws.amazon.com/cdk/v2/guide/prerequisites.html)*
 
-- Navigate to the `cdk` directory and run 
+- Navigate to the `cdk` directory and install pacakges 
   ```bash
   cd cdk
   npm install
