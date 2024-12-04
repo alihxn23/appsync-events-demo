@@ -56,12 +56,12 @@ export function App() {
         <main className="chat-container">
           <div className="messages-container">
             {messages.map((msg, i) => (
-              <div key={`message-${i}`} className="message">
+              <div key={`message-${i}`}>
                 <strong className="message-username">
                   {msg.user === email ? "Me" : msg.user}
                 </strong>
                 <br></br>
-                {msg.content}
+                <div className="message">{msg.content}</div>
               </div>
             ))}
           </div>
