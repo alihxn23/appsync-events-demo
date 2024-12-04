@@ -1,7 +1,25 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { signOut } from "aws-amplify/auth";
 import { useEffect, useState } from "react";
 import "./App.css";
+import { Amplify } from "aws-amplify";
+import { events } from "aws-amplify/data";
+import { fetchAuthSession, signOut } from "aws-amplify/auth";
+import { withAuthenticator } from "@aws-amplify/ui-react";
+
+Amplify.configure({
+  Auth: {
+    Cognito: {
+      userPoolId: "your-user-pool-id",
+      userPoolClientId: "your-app-client-id",
+    },
+  },
+  API: {
+    Events: {
+      endpoint: "your-endpoint",
+      region: "us-east-1",
+      defaultAuthMode: "userPool",
+    },
+  },
+});
 
 export function App() {
   const [messages, setMessages] = useState<
@@ -10,19 +28,39 @@ export function App() {
   const [newMessage, setNewMessage] = useState<string>("");
   const [email, setEmail] = useState<string>("");
 
-  // get user
   useEffect(() => {
-    // get logged in user's email and update state
-    // setEmail(userEmail);
+    const getUser = async () => {
+      const e =
+        (await fetchAuthSession()).tokens?.idToken?.payload.email?.toString() ??
+        "unknown";
+      setEmail(e);
+    };
+    getUser();
   }, []);
+
+  const makeConnection = async () => {
+    const channel = await events.connect("/default/test");
+    channel.subscribe({
+      next: (data) => {
+        setMessages((old) => [
+          ...old,
+          { content: data.event.content, user: data.event.user },
+        ]);
+      },
+      error: (err) => console.error("error", err),
+    });
+    return channel;
+  };
 
   // setup ws listener
   useEffect(() => {
     // connect to the websocket endpoint
+    const channel = makeConnection();
 
     //cleanup function
     return () => {
       // close the websocket connection if the component is unmounted
+      channel.then((c) => c.close());
     };
   }, []);
 
@@ -31,6 +69,7 @@ export function App() {
     if (newMessage.length === 0) return;
 
     // send the message here
+    await events.post("/default/test", { content: newMessage, user: email });
 
     // clear newMessage
     setNewMessage("");
@@ -85,4 +124,4 @@ export function App() {
   );
 }
 
-export default App;
+export default withAuthenticator(App);
