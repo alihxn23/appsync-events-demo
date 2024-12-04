@@ -1,19 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from "react";
-import config from "../amplifyconfiguration.json";
 import "./App.css";
-import { Message } from "./models/Message";
 
 export function App() {
-  const [messages, setMessages] = useState<Array<Message>>([]);
+  const [messages, setMessages] = useState<Array<{ content: string }>>([]);
   const [newMessage, setNewMessage] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-
-  // get user
-  useEffect(() => {
-    // get logged in user's email and update state
-    // setEmail(userEmail);
-  }, []);
 
   // setup ws listener
   useEffect(() => {
@@ -27,6 +18,7 @@ export function App() {
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (newMessage.length === 0) return;
 
     // send the message here
 
@@ -39,22 +31,12 @@ export function App() {
       <div className="container">
         <header>
           <h1>QuickChat</h1>
-          <div>
-            <h3>{email}</h3>
-            <h3 className="sign-out" onClick={() => {}}>
-              Sign Out
-            </h3>
-          </div>
         </header>
         <main className="chat-container">
           <div className="messages-container">
             {messages.map((msg, i) => (
-              <div key={`message-${i}`} className="message">
-                <strong className="message-username">
-                  {msg.user === email ? "Me" : msg.user}
-                </strong>
-                <br></br>
-                {msg.content}
+              <div key={`message-${i}`}>
+                <div className="message">{msg.content}</div>
               </div>
             ))}
           </div>
