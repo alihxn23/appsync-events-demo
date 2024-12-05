@@ -23,7 +23,7 @@ npm run dev
   ```bash
   cdk deploy Backend
   ```
-- This would deploy the backend stack and output the user pool id, app client id, and appsync event api endpoint in the terminal. Paste these values in the `amplifyconfiguration.json` file
+- This would deploy the backend stack and output the user pool id, app client id, and appsync event api endpoint in the terminal. Paste these values in the `App.tsx` file
 - Go back to the root directory and build the frontend
   ```bash
   cd ..

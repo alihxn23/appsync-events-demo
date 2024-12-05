@@ -1,15 +1,12 @@
 import { Construct } from "constructs";
 import { aws_appsync as appsync } from "aws-cdk-lib";
 
-interface ApiProps {
-  userPoolId: string;
-}
-
 export class Api extends Construct {
   public readonly eventsApi: appsync.CfnApi;
   public readonly namespace: appsync.CfnChannelNamespace;
+  public readonly apiKey: appsync.CfnApiKey;
 
-  constructor(scope: Construct, id: string, props: ApiProps) {
+  constructor(scope: Construct, id: string) {
     super(scope, id);
 
     // using L1 constructs here..
@@ -20,16 +17,12 @@ export class Api extends Construct {
       eventConfig: {
         authProviders: [
           {
-            authType: "AMAZON_COGNITO_USER_POOLS",
-            cognitoConfig: {
-              awsRegion: "us-east-1", // making an assumption
-              userPoolId: props.userPoolId,
-            },
+            authType: "API_KEY",
           },
         ],
-        connectionAuthModes: [{ authType: "AMAZON_COGNITO_USER_POOLS" }],
-        defaultPublishAuthModes: [{ authType: "AMAZON_COGNITO_USER_POOLS" }],
-        defaultSubscribeAuthModes: [{ authType: "AMAZON_COGNITO_USER_POOLS" }],
+        connectionAuthModes: [{ authType: "API_KEY" }],
+        defaultPublishAuthModes: [{ authType: "API_KEY" }],
+        defaultSubscribeAuthModes: [{ authType: "API_KEY" }],
       },
     });
 
@@ -42,7 +35,12 @@ export class Api extends Construct {
       }
     );
 
+    const apiKey = new appsync.CfnApiKey(this, "MyCfnApiKey", {
+      apiId: api.attrApiId,
+    });
+
     this.eventsApi = api;
     this.namespace = namespace;
+    this.apiKey = apiKey;
   }
 }
